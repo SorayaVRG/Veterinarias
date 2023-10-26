@@ -1,0 +1,349 @@
+﻿@model IEnumerable<Veterinarias.Modelos.PR_MASCOTAS_S01>
+
+@*<div class="mail-box">
+    <h2>Veterinarios</h2>
+    <p>
+        <a asp-action="Create" class="btn btn-primary add-dialog-window">Nuevo Registro</a>
+    </p>*@
+<div class="mail-box">
+    <h2>Mascotas</h2>
+    <form asp-action="Index">
+        <div class="row">
+            <div class="form-group col-md-5">
+                <label for="animalNombre">Animal</label>
+                <select id="comboAnimal" class="form-control" asp-items="ViewBag.IdAnimal" name="IdAnimal" onchange="onchangeAnimales()"></select>
+            </div>
+            <div class="form-group col-md-5">
+                <label for="razaNombre">Raza</label>
+                <select id="comboRaza" class="form-control" asp-items="ViewBag.IdRaza" name="IdRaza"></select>
+            </div>
+
+            <div class="form-group col-md-5">
+                <label for="DueñoNombre">Dueño</label>
+                <a onclick="onclickBuscarPersonas()" class="btn btn-sm btn-info text-white">Buscar</a>
+                <input required disabled class="form-control" id="NombrePersona" />
+                <input type="hidden" class="form-control" id="NombrePersona" name="NombrePersona" />
+            </div>
+
+            <div class="form-group col-md-5">
+                <input type="submit" class="btn btn-success" value="Aplicar Filtros" />
+                <a asp-action="Index" class="btn btn-secondary">Limpiar</a>
+            </div>
+        </div>
+    </form>
+    <br />
+    <p>
+        <a asp-action="Create" class="btn btn-primary add-dialog-window">Nuevo Registro</a>
+    </p>
+    <div class="table-responsive table-sm table-hover">
+        <table id="example" class="table table-hover table-mail">
+            <thead class="table-active">
+                <tr>
+                    <th>
+                        Animal
+                    </th>
+                    <th>
+                        Raza
+                    </th>
+                    <th>
+                        Nombres
+                    </th>
+                    <th>
+                        Fecha nac
+                    </th>
+                    <th>
+                        Edad
+                    </th>
+                    <th>
+                        Color
+                    </th>
+                    <th>
+                        Foto
+                    </th>
+                    <th>
+                        Dueño
+                    </th>
+                    <th>
+                        Estado
+                    </th>
+                    <th>
+                        Acciones
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Animal)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Raza)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Nombres)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FechaNacimiento)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Edad)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Color)
+                        </td>
+
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.Foto))
+                            {
+                                <img src="@item.Foto" class="img-listado" alt="Foto de la mascota" />
+                            }
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Dueño)
+                        </td>
+                        <td>
+                            <span class="estado-badge @(item.Estado == "Registrado" ? "badge-secondary" : (item.Estado == "Aprobado" ? "badge-success" : "badge-danger"))">
+                                @(item.Estado == "Registrado" ? "Registrado" : (item.Estado == "Aprobado" ? "Aprobado" : "Rechazado"))
+                            </span>
+                        </td>
+
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning edit-dialog-window">Editar</a>
+                            @*@if (item.Estado == "Registrado")
+                            {
+                                
+                            }*@
+                        </td>
+
+                        @*<td>
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning edit-dialog-window">Editar</a>
+                            @if (item.Estado == "Registrado")
+                            {
+                                <a data-id="@item.Id" class="btn btn-success aprobar-dialog-window">Aprobar</a>
+                                <a data-id="@item.Id" class="btn btn-danger rechazar-dialog-window">Rechazar</a>
+                            }
+                            else if (item.Estado == "Aprobado")
+                            {
+                                <a data-id="@item.Id" class="btn btn-danger anular-dialog-window">Rechazar</a>
+                            }
+                            else
+                            {
+                                <a data-id="@item.Id" class="btn btn-success activar-dialog-window">Registrar</a>
+                            }
+                        </td>*@
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="AddModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="width:50%;">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:green;color:white;">
+                <h5 class="modal-title" id="TittleCreatemodel">Crear Registro</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="teeee">Please wait...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="EditModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="width:50%;">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:orange;color:white;">
+                <h5 class="modal-title" id="TittleCreatemodel">Actualizar Registro</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="teeee">Please wait...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="PersonasModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="width:50%;">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:orange;color:white;">
+                <h5 class="modal-title" id="TittleCreatemodel">Actualizar Registro</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="teeee">Please wait...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+        //PARA ABRIR UNA VENTANA CREATE
+        $("body").on("click", "a.add-dialog-window", null, function (e) {
+            e.preventDefault();
+            var $link = $(this);
+            var url = $(this).attr('href');
+            if (url.indexOf('#') == 0) {
+                $('#AddModal').modal('show');
+            }
+            else {
+                $.get(url, function (data) {
+                    $('#AddModal .teeee').html(data);
+                    $('#AddModal').modal('show');
+                });
+            }
+        });
+    </script>
+
+    <script>
+        //PARA ABRIR UNA VENTANA EDIT
+        $("body").on("click", "a.edit-dialog-window", null, function (e) {
+            e.preventDefault();
+            //debugger;
+            var $link = $(this);
+            var url = $(this).attr('href');
+            if (url.indexOf('#') == 0) {
+                $('#EditModal').modal('show');
+            }
+            else {
+                $.get(url, function (data) {
+                    $('#EditModal .teeee').html(data);
+                    $('#EditModal').modal('show');
+                });
+            }
+        });
+    </script>
+
+    @*Para buscar*@
+    <script>
+        function onclickBuscarPersonas() {
+            //debugger;
+            // Obtener el valor del input que contiene el ID de la persona a buscar
+            var parametro = $('#parametroBusqueda').val();
+
+            // Construir la URL de la acción del controlador que manejará la búsqueda
+            // Cambiar "Mascotas" por el nombre del controlador que manejará la búsqueda
+            // Cambiar "BuscarPersonas" por el nombre de la acción que manejará la búsqueda
+            var url = '@Url.Action("BuscarPersonas", "Mascotas")';
+            url += '?busqueda=' + parametro;
+
+            // Hacer la petición AJAX al servidor
+            $.ajax({
+                type: 'GET',
+                url: url,
+                dataType: 'html',
+                success: function (data) {
+                    // Agregar la respuesta HTML a un elemento en el modal correspondiente
+                    // Cambiar "PersonasModal" por el ID del modal correspondiente
+                    $('#PersonasModal .teeee').html(data);
+                    // Mostrar el modal correspondiente
+                    $('#PersonasModal').modal('show');
+                },
+                error: function (ex) {
+                    // Manejar el error si la petición AJAX falla
+                    alert('Failed to retrieve cities.' + ex);
+                }
+            });
+        }
+    </script>
+
+    <script>
+        // Función para seleccionar fila y obtener valores de selección
+        $(document).on('click', '#tablaBuscarPersona tbody tr', function () {
+            //Selecciona fila.
+            let TotalColumnas = $("#tablaBuscarPersona").find("tr");
+            $(TotalColumnas).each(function () {
+                $(this).removeClass('active');
+            });
+            $(this).addClass('active');
+            //Obtiene valores de selección
+            dato1 = $(this).find("td").eq(0).text().trim();
+            dato2 = $(this).find("td").eq(1).text().trim();
+            dato3 = $(this).find("td").eq(2).text().trim();
+            dato4 = $(this).find("td").eq(3).text().trim();
+        });
+    </script>
+
+    <script>
+        function GuardarE3() {
+            //debugger
+
+            // Verifica que los datos estén completos
+            if (dato1 != null && dato2 != null && dato3 != null && dato4 != null) {
+                // Asigna los valores seleccionados a los campos correspondientes
+                //$('.NombrePersona').val(dato4); // Nombres
+                document.getElementById('NombrePersona').value = dato4; // ID
+                document.getElementById('NombrePersona2').value = dato4; // ID
+                //document.getElementById('IdPersonas').value = dato1; // ID
+                $('#tipo_doc_person').val(dato2); // Tipo de documento
+                $('#num_doc_person').val(dato3);    // Número de documento
+
+                // Oculta el modal de personas nuevamente
+                $('#PersonasModal').modal('hide');
+        } else {
+                // Si los datos están incompletos, muestra un mensaje de alerta
+                alert('Debe seleccionar una persona de la lista.');
+            }
+        }
+    </script>
+
+    <script>
+        //VALENTINA
+        function onchangeAnimales() {
+            var animalId = $("#comboAnimal").val();
+            $.ajax({
+                url: "/Mascotas/CargarRazas?id=" + animalId,
+                type: "GET",
+                success: function (data) {
+                    var razas = $("#comboRaza");
+                    razas.empty();
+                    $.each(data, function (i, item) {
+                        razas.append($('<option>').val(item.id).text(item.nombre));
+                    });
+                }
+            });
+        }
+    </script>
+
+    @*PARA DATATABLES*@
+    <script>
+        $(document).ready(function () {
+            //ESTE ES PARA EL DATATABLES
+            $('#example').DataTable({
+                language: {
+                    search: "Buscar: ",
+                    info: "Mostrando _START_ a _END_ de _TOTAL_ elementos",
+                    infoFiltered: "(filtrado de _MAX_ registros en total)",
+                    paginate: {
+                        first: "Primero",
+                        previous: "<",
+                        next: ">",
+                        last: "Último"
+                    }
+                },
+                "order": [[0, "asc"]],
+                stateSave: true,
+                dom: 'Bfrtip',
+                buttons: [
+                    'excelHtml5',
+                    'pdfHtml5'
+                ]
+            });
+        });
+    </script>
+}

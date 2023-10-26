@@ -1,0 +1,69 @@
+﻿@model Veterinarias.Modelos.Mascotas
+
+<div class="ibox-content">
+    <div class="row">
+       @*FILTRA EN MI INDEX PERO YA NO EDITA EL COMBO NI EL METODO BUSCAR*@
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="col col-sm-12">
+                <div class="form-group">
+                    <div class="input text">
+                        @*crear un cuadro de texto donde se rellenaran los siguientes datos*@
+                        <div class="form-group">
+                            <label asp-for="IdAnimal" class="control-label">Animal</label>
+                            <select asp-for="IdAnimal" class="form-control" asp-items="ViewBag.IdAnimal" id="comboAnimal" onchange="onchangeAnimales()"></select>
+                            <span asp-validation-for="IdAnimal" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="IdRaza" class="control-label">Raza</label>
+                            <select asp-for="IdRaza" class="form-control" id="comboRaza"></select>
+                            <span asp-validation-for="IdRaza" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Nombres" class="control-label"></label>
+                            <input asp-for="Nombres" class="form-control" />
+                            <span asp-validation-for="Nombres" class="text-danger"></span>
+                        </div>
+                        <div class="input-text">
+                            <label asp-for="FechaNacimiento" class="control-label">Fecha nacimiento</label>
+                            <input asp-for="FechaNacimiento" class="form-control" type="date"  required />
+                            <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Color" class="control-label"></label>
+                            <input asp-for="Color" class="form-control" />
+                            <span asp-validation-for="Color" class="text-danger"></span>
+                        </div>
+
+
+                        <div class="form-group col-md-6">
+                            <input class="form-control input-sm" hidden id="IdPersonas" asp-for="IdPersona" />
+                            <label class="control-label">
+                                Dueño
+                                <a onclick="onclickBuscarPersonas()" class="btn btn-sm btn-info text-white">Buscar</a>
+                            </label>
+                            <input required disabled class="form-control" id="NombrePersona2" name="NombrePersona2" />
+                            <input type="hidden" asp-for="PersonaDescripcion" id="emp_person" name="PersonaDescripcion" class="form-control" />
+                            <input type="hidden" id="TipoDocumento" name="TipoDocumento" class="form-control" />
+                            <input type="hidden" id="NumeroDocumento" name="NumeroDocumento" class="form-control" />
+                        </div>
+
+
+                        <div class="form-group">
+                            <div class="input text">
+                                <label asp-for="FotoIFormFile" class="control-label">Foto</label>
+                                <input asp-for="FotoIFormFile" class="form-control" type="file" accept="image/png, image/jpeg">
+                                <span asp-validation-for="FotoIFormFile" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col col-sm-12 text-right">
+                <div class="form-group">
+                    <input type="submit" value="Guardar" class="btn btn-success" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,31 @@
+﻿html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+}
+
+.img-listado {
+    width: 50px; /* Ajusta el ancho deseado */
+    height: auto; /* Ajusta la altura proporcionalmente */
+}
+
+.btn-group > .btn {
+    border-right: 5px solid #ddd;
+}
+
+.btn-group > .btn:last-child {
+    border-right: none;
+}

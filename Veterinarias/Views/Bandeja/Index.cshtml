@@ -1,0 +1,221 @@
+﻿@model IEnumerable<Veterinarias.Modelos.PR_MASCOTAS_S01>
+
+@*<div class="mail-box">
+    <h2>Veterinarios</h2>
+    <p>
+        <a asp-action="Create" class="btn btn-primary add-dialog-window">Nuevo Registro</a>
+    </p>*@
+<div class="mail-box">
+    <h2>Bandeja de aprobación</h2>
+    
+    <div class="table-responsive table-sm table-hover">
+        <table id="example" class="table table-hover table-mail">
+            <thead class="table-active">
+                <tr>
+                    <th>
+                        Animal
+                    </th>
+                    <th>
+                        Raza
+                    </th>
+                    <th>
+                        Nombres
+                    </th>
+                    <th>
+                        Fecha nac
+                    </th>
+                    <th>
+                        Edad
+                    </th>
+                    <th>
+                        Color
+                    </th>
+                    <th>
+                        Foto
+                    </th>
+                    <th>
+                        Dueño
+                    </th>
+                    <th>
+                        Estado
+                    </th>
+                    <th>
+                        Acciones
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Animal)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Raza)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Nombres)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FechaNacimiento)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Edad)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Color)
+                        </td>
+
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.Foto))
+                            {
+                                <img src="@item.Foto" class="img-listado" alt="Foto de la mascota" />
+                            }
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Dueño)
+                        </td>
+
+                        <td>
+                            <span class="estado-badge @(item.Estado == "Registrado" ? "badge-secondary" : (item.Estado == "Aprobado" ? "badge-success" : "badge-danger"))">
+                                @(item.Estado == "Registrado" ? "Registrado" : (item.Estado == "Aprobado" ? "Aprobado" : "Rechazado"))
+                            </span>
+                        </td>
+
+                        <td>
+                            @if (item.Estado == "Registrado")
+                            {
+                                <a data-id="@item.Id" class="btn btn-danger delete-dialog-window">Rechazar</a>
+                                <a data-id="@item.Id" class="btn btn-success activar-dialog-window">Aprobar</a>
+                            }
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="Activar" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:#3fb618;color:white;">
+                <button data-dismiss="modal" class="close" type="button">
+                    <span aria-hidden="true">×</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h2 class="modal-title">Aprobar</h2>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <h4>¿Estás seguro de aprobar la la solicitud?</h4>
+                </div>
+                <div id="responseActivar" class="text-right">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="Anular" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:#da2213;color:white;">
+                <button data-dismiss="modal" class="close" type="button">
+                    <span aria-hidden="true">×</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h2 class="modal-title">Rechazar</h2>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <h4>¿Estás seguro de rechazar la solicitud?</h4>
+                </div>
+                <div id="responseInactivar" class="text-right">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="AddModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="width:50%;">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:green;color:white;">
+                <h5 class="modal-title" id="TittleCreatemodel">Crear Registro</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="teeee">Please wait...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+
+    <script>
+        $("body").on("click", "a.delete-dialog-window", null, function (e) {
+            var htmlContent = '<br /><button type="button" id="btnNo" class="btn btn-danger" style="background-color:#da2213;color:white;" data-dismiss="modal" aria-hidden="true">No</button>&nbsp&nbsp<a href="@Url.Action("Anular", "Bandeja")/' + $(this).data('id') + '" class="btn btn-default">Sí</a>';
+            $("#responseInactivar").html(htmlContent);
+            $('#Anular').modal('show');
+        });
+
+        $("body").on("click", "a.activar-dialog-window", null, function (e) {
+            var htmlContent = '<br /><button type="button" id="btnNoActivar" class="btn btn-danger" style="background-color:#da2213;color:white;" data-dismiss="modal" aria-hidden="true">No</button>&nbsp&nbsp<a href="@Url.Action("Activar", "Bandeja")/' + $(this).data('id') + '" class="btn btn-success">Sí</a>';
+            $("#responseActivar").html(htmlContent);
+            $('#Activar').modal('show');
+        });
+    </script>
+
+    <script>
+        //PARA ABRIR UNA VENTANA CREATE
+        $("body").on("click", "a.add-dialog-window", null, function (e) {
+            e.preventDefault();
+            var $link = $(this);
+            var url = $(this).attr('href');
+            if (url.indexOf('#') == 0) {
+                $('#AddModal').modal('show');
+            }
+            else {
+                $.get(url, function (data) {
+                    $('#AddModal .teeee').html(data);
+                    $('#AddModal').modal('show');
+                });
+            }
+        });
+    </script>
+
+    @*PARA DATATABLES*@
+    <script>
+        $(document).ready(function () {
+            //ESTE ES PARA EL DATATABLES
+            $('#example').DataTable({
+                language: {
+                    search: "Buscar: ",
+                    info: "Mostrando _START_ a _END_ de _TOTAL_ elementos",
+                    infoFiltered: "(filtrado de _MAX_ registros en total)",
+                    paginate: {
+                        first: "Primero",
+                        previous: "<",
+                        next: ">",
+                        last: "Último"
+                    }
+                },
+                "order": [[0, "asc"]],
+                stateSave: true,
+                dom: 'Bfrtip',
+                buttons: [
+                    'excelHtml5',
+                    'pdfHtml5'
+                ]
+            });
+        });
+    </script>
+    }
