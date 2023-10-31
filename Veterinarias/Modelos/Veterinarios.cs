@@ -23,7 +23,6 @@ namespace Veterinarias.Modelos
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime FechaNacimiento { get; set; }
 
-        [NotMapped]
         [DisplayName("Edad")]
         public int Edad { get; set; }
 
@@ -39,7 +38,7 @@ namespace Veterinarias.Modelos
         [DisplayName("Foto")]
         public string? Foto { get; set; }
         [NotMapped]
-        public IFormFile FotoIFormFile { get; set; }
+        public IFormFile FotoIFormFile { get; set; }//se encarga de recepcionar los datos a traves de los forms
         public string FotoURL => Foto == null ? "" : Foto;
 
         public string FotoURL2

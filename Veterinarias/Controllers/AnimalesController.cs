@@ -47,32 +47,53 @@ namespace Veterinarias.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(Animales model)
         {
-            var modelOld = await _context.Animales.FindAsync(model.Id);//select * from Zonas where PK = id
-            modelOld.Nombre = model.Nombre;
-            _context.Update(modelOld);//update ANIMALES set NOMBRES = model.NOMBRES
-            await _context.SaveChangesAsync(); //commit a la base de datos
-            return RedirectToAction(nameof(Index));
+            var modelOld = await _context.Animales.FindAsync(model.Id);//select * from Animales where PK = id
+            
+            if(modelOld != null)
+            {
+                modelOld.Nombre = model.Nombre;
+                _context.Update(modelOld);//update ANIMALES set NOMBRES = model.NOMBRES
+                await _context.SaveChangesAsync(); //commit a la base de datos
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                return RedirectToAction(nameof(Index));
+            }
         }
-
 
         //PARA ACTIVAR Y DESACTIVAR ANIMALES
         public async Task<IActionResult> Activar(int id)
         {
             var animales = await _context.Animales.FindAsync(id);
-            animales.Estado = true; // Establecer el estado como activado
-            _context.Update(animales);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            if(animales != null)
+            {
+                animales.Estado = true; // Establecer el estado como activado
+                _context.Update(animales);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            } 
+            else
+            {
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // Anular ANIMALES method GET
         public async Task<IActionResult> Anular(int id)
         {
             var animales = await _context.Animales.FindAsync(id);
-            animales.Estado = false; // Establecer el estado como anulado
-            _context.Update(animales);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            if(animales != null)
+            {
+                animales.Estado = false; // Establecer el estado como anulado
+                _context.Update(animales);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                return RedirectToAction(nameof(Index));
+            }
         }
     }
 }
